@@ -1,24 +1,23 @@
 const express = require("express");
-const sequelize = require("./config/db");
-const User = require("./models/User");
-const Inventory = require("./models/Inventory");
-const Item = require("./models/Item");
+const dotenv = require("dotenv");
+const cors = require("cors");
 
-const userRoutes = require("./routes/userRoutes"); // ✅ নতুন যোগ করা
+dotenv.config();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/api/users", userRoutes); 
+const userRoutes = require("./routes/userRoutes");
+const protectedRoutes = require("./routes/protectedRoutes");
 
-// Server start
-app.listen(5000, async () => {
-  console.log("Server running on port 5000");
-  try {
-    await sequelize.sync();
-    console.log("✅ Database synced successfully");
-  } catch (error) {
-    console.error("❌ Database sync failed:", error);
-  }
+app.use("/api/users", userRoutes);
+app.use("/api/protected", protectedRoutes);
+
+app.get("/", (req, res) => {
+  res.send("Inventory Management API running...");
 });
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
