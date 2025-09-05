@@ -1,21 +1,24 @@
 const express = require("express");
-const cors = require("cors");
 const sequelize = require("./config/db");
-const { User, Inventory, Item } = require("./models");
+const User = require("./models/User");
+const Inventory = require("./models/Inventory");
+const Item = require("./models/Item");
+
+const userRoutes = require("./routes/userRoutes"); // ✅ নতুন যোগ করা
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("Backend running with database 🚀");
+// Routes
+app.use("/api/users", userRoutes); 
+
+// Server start
+app.listen(5000, async () => {
+  console.log("Server running on port 5000");
+  try {
+    await sequelize.sync();
+    console.log("✅ Database synced successfully");
+  } catch (error) {
+    console.error("❌ Database sync failed:", error);
+  }
 });
-
-// Sync Database
-sequelize
-  .sync({ alter: true })
-  .then(() => console.log("✅ Database synced successfully"))
-  .catch((err) => console.error("❌ Database sync failed:", err));
-
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
