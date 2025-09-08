@@ -11,9 +11,11 @@ app.use(express.json());
 // Routes
 const userRoutes = require("./routes/userRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 app.use("/api/users", userRoutes);
 app.use("/api/protected", protectedRoutes);
+app.use("/api/products", productRoutes);
 
 app.get("/", (req, res) => {
   res.send("Inventory Management API running...");
